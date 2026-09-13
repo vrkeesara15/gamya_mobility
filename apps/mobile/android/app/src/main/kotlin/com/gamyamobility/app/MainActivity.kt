@@ -1,4 +1,4 @@
-package com.gamyamobility.gamya_mobile
+package com.gamyamobility.app
 
 import io.flutter.embedding.android.FlutterActivity
 

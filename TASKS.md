@@ -38,11 +38,11 @@ Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 - [x] T3A Admin web builds (`flutter build web`) and passes `flutter analyze`
 
 ## Phase 4 — Mobile App (Flutter Android; Driver + Supervisor)
-- [ ] T40 App shell: splash, role selection, auth flow, routing, Android config (package id, icons, permissions)
-- [ ] T41 Supervisor: registration, facial identification, pending approval, login
-- [ ] T42 Supervisor: dashboard, post requirement (3-step), summary, confirmation, tracking timeline, my bookings, history, profile, support
-- [ ] T43 Driver: registration, facial identification, vehicle & documents upload (3-step), pending approval, approved
-- [ ] T44 Driver: dashboard, notifications, trip details accept/decline, accepted trip, my trips, trip completed, earnings, documents, profile, help
+- [x] T40 App shell: splash, role selection, auth flow, routing, Android config (package id, icons, permissions)
+- [x] T41 Supervisor: registration, facial identification, pending approval, login
+- [x] T42 Supervisor: dashboard, post requirement (3-step), summary, confirmation, tracking timeline, my bookings, history, profile, support
+- [x] T43 Driver: registration, facial identification, vehicle & documents upload (3-step), pending approval, approved
+- [x] T44 Driver: dashboard, notifications, trip details accept/decline, accepted trip, my trips, trip completed, earnings, documents, profile, help
 - [ ] T45 Mobile app passes `flutter analyze`; Android build config verified
 
 ## Phase 5 — Infra & Delivery

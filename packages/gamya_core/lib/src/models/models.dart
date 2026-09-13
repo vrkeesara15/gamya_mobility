@@ -278,6 +278,7 @@ class Trip {
   int? get modelYearMin => _n(raw['modelYearMin'])?.toInt();
   String get bookingType => _s(raw['bookingType']) ?? 'INSTANT';
   int get passengers => _i(raw['passengers'], 1);
+  String? get specialInstructions => _s(raw['specialInstructions']);
   num? get amount => _n(raw['amount']);
   bool? get onTime => raw['onTime'] as bool?;
   String? get externalTripId => _s(raw['externalTripId']);
