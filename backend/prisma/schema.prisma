@@ -1,0 +1,624 @@
+// Gamya Mobility — data model
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────────────────── Enums ─────────────────────────
+enum Role {
+  ADMIN
+  SUPERVISOR
+  DRIVER
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  OPS
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+  REJECTED
+  BLACKLISTED
+}
+
+enum VehicleType {
+  SEDAN
+  SUV
+  INNOVA
+  TEMPO_TRAVELLER
+  TEMPO
+  OTHER
+}
+
+enum VehicleStatus {
+  ACTIVE
+  INACTIVE
+  UNDER_REVIEW
+  BLACKLISTED
+}
+
+enum FuelType {
+  PETROL
+  DIESEL
+  CNG
+  ELECTRIC
+  HYBRID
+}
+
+enum DocumentType {
+  RC
+  PERMIT
+  INSURANCE
+  DRIVING_LICENCE
+  PUC
+  FITNESS
+  VEHICLE_PHOTO_1
+  VEHICLE_PHOTO_2
+  FACE_VERIFICATION
+  AADHAAR
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+enum ApprovalType {
+  DRIVER_REGISTRATION
+  VEHICLE_REGISTRATION
+  DOCUMENT_UPLOAD
+  DOCUMENT_RENEWAL
+  SUPERVISOR_REGISTRATION
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BookingType {
+  INSTANT
+  SCHEDULED
+}
+
+enum AdhocStatus {
+  PENDING
+  ASSIGNED
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum TripType {
+  REGULAR
+  ADHOC
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  RESCHEDULED
+  CANCELLED
+  COMPLETED
+}
+
+enum TripStatus {
+  ASSIGNED
+  ACCEPTED
+  YET_TO_START
+  ON_TRIP
+  DELAYED
+  COMPLETED
+  CANCELLED
+}
+
+enum TripEventType {
+  REQUIREMENT_POSTED
+  VENDOR_ASSIGNED
+  DRIVER_ACCEPTED
+  DRIVER_DECLINED
+  TRIP_CREATED_IN_PLATFORM
+  DRIVER_STARTED
+  TRIP_DELAYED
+  TRIP_COMPLETED
+  TRIP_CANCELLED
+  NOTE
+}
+
+enum EarningStatus {
+  PENDING
+  SETTLED
+}
+
+enum SettlementStatus {
+  PENDING
+  PAID
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+}
+
+enum NotificationType {
+  TRIP_REQUEST
+  TRIP_UPDATE
+  ACCOUNT
+  APPROVAL
+  PAYMENT
+  SYSTEM
+}
+
+// ───────────────────────── Core identity ─────────────────────────
+model User {
+  id           String        @id @default(cuid())
+  role         Role
+  fullName     String
+  email        String?       @unique
+  mobile       String?       @unique
+  passwordHash String
+  avatarUrl    String?
+  status       AccountStatus @default(PENDING)
+  fcmToken     String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  admin          AdminUser?
+  supervisor     Supervisor?
+  driver         Driver?
+  notifications  Notification[]
+  activityLogs   ActivityLog[]   @relation("ActorLogs")
+  passwordResets PasswordReset[]
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model AdminUser {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adminRole   AdminRole @default(ADMIN)
+  designation String?
+  createdAt   DateTime  @default(now())
+
+  reviewedApprovals ApprovalRequest[] @relation("ReviewedBy")
+  verifiedDocuments Document[]        @relation("VerifiedBy")
+}
+
+model Client {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  code          String?  @unique
+  contactName   String?
+  contactMobile String?
+  email         String?
+  address       String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  supervisors   Supervisor[]
+  adhocRequests AdhocRequest[]
+  bookings      Booking[]
+  trips         Trip[]
+  invoices      Invoice[]
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  city      String   @default("Hyderabad")
+  area      String?
+  latitude  Float?
+  longitude Float?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  supervisors Supervisor[]
+}
+
+model Platform {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  code           String   @unique
+  color          String   @default("#9CA3AF")
+  deepLinkScheme String?
+  websiteUrl     String?
+  active         Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  drivers       Driver[]
+  vehicles      Vehicle[]
+  adhocRequests AdhocRequest[]
+  bookings      Booking[]
+  trips         Trip[]
+}
+
+// ───────────────────────── Staff ─────────────────────────
+model Supervisor {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code           String    @unique // SUP001
+  employeeId     String?
+  companyName    String
+  clientId       String?
+  client         Client?   @relation(fields: [clientId], references: [id])
+  designation    String?   @default("Supervisor")
+  dateOfJoining  DateTime?
+  selfieUrl      String?
+  faceVerified   Boolean   @default(false)
+  faceMatchScore Float?
+  approvedAt     DateTime?
+  approvedById   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  locations     Location[]
+  adhocRequests AdhocRequest[]
+  bookings      Booking[]
+  trips         Trip[]
+  approvals     ApprovalRequest[]
+  vehicles      Vehicle[]
+}
+
+model Driver {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code              String    @unique // DRV001 / GM2026xxxx
+  dateOfBirth       DateTime?
+  address           String?
+  city              String?   @default("Hyderabad")
+  licenceNumber     String?
+  joiningDate       DateTime?
+  selfieUrl         String?
+  idPhotoUrl        String?
+  faceVerified      Boolean   @default(false)
+  faceMatchScore    Float?
+  reVerificationDue DateTime?
+  blacklistReason   String?
+  approvedAt        DateTime?
+  approvedById      String?
+  rating            Float?    @default(4.8)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  platforms     Platform[]
+  vehicles      Vehicle[]
+  documents     Document[]
+  approvals     ApprovalRequest[]
+  adhocRequests AdhocRequest[]    @relation("AssignedDriver")
+  bookings      Booking[]
+  trips         Trip[]
+  earnings      Earning[]
+  settlements   Settlement[]
+}
+
+// ───────────────────────── Fleet ─────────────────────────
+model Vehicle {
+  id                 String        @id @default(cuid())
+  number             String        @unique
+  make               String
+  model              String
+  year               Int
+  type               VehicleType
+  color              String?
+  fuelType           FuelType?     @default(PETROL)
+  seatingCapacity    String?
+  status             VehicleStatus @default(UNDER_REVIEW)
+  driverId           String?
+  driver             Driver?       @relation(fields: [driverId], references: [id])
+  supervisorId       String?
+  supervisor         Supervisor?   @relation(fields: [supervisorId], references: [id])
+  platformId         String?
+  platform           Platform?     @relation(fields: [platformId], references: [id])
+  registrationDate   DateTime?
+  permitValidTill    DateTime?
+  insuranceValidTill DateTime?
+  pucValidTill       DateTime?
+  fitnessValidTill   DateTime?
+  currentLocation    String?
+  latitude           Float?
+  longitude          Float?
+  blacklistReason    String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  photos        VehiclePhoto[]
+  documents     Document[]
+  approvals     ApprovalRequest[]
+  adhocRequests AdhocRequest[]    @relation("AssignedVehicle")
+  bookings      Booking[]
+  trips         Trip[]
+}
+
+model VehiclePhoto {
+  id        String   @id @default(cuid())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id           String         @id @default(cuid())
+  type         DocumentType
+  fileUrl      String
+  fileName     String?
+  mimeType     String?
+  status       DocumentStatus @default(PENDING)
+  validTill    DateTime?
+  driverId     String?
+  driver       Driver?        @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  vehicleId    String?
+  vehicle      Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  verifiedAt   DateTime?
+  verifiedById String?
+  verifiedBy   AdminUser?     @relation("VerifiedBy", fields: [verifiedById], references: [id])
+  remarks      String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  approvals ApprovalRequest[]
+}
+
+model ApprovalRequest {
+  id           String         @id @default(cuid())
+  type         ApprovalType
+  status       ApprovalStatus @default(PENDING)
+  details      String?
+  driverId     String?
+  driver       Driver?        @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  vehicleId    String?
+  vehicle      Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  supervisorId String?
+  supervisor   Supervisor?    @relation(fields: [supervisorId], references: [id], onDelete: Cascade)
+  documentId   String?
+  document     Document?      @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  submittedAt  DateTime       @default(now())
+  reviewedAt   DateTime?
+  reviewedById String?
+  reviewedBy   AdminUser?     @relation("ReviewedBy", fields: [reviewedById], references: [id])
+  remarks      String?
+  createdAt    DateTime       @default(now())
+}
+
+// ───────────────────────── Operations ─────────────────────────
+model AdhocRequest {
+  id                  String      @id @default(cuid())
+  code                String      @unique // ADH-20260910-001
+  clientId            String?
+  client              Client?     @relation(fields: [clientId], references: [id])
+  supervisorId        String?
+  supervisor          Supervisor? @relation(fields: [supervisorId], references: [id])
+  contactName         String?
+  contactMobile       String?
+  fromLocation        String
+  toLocation          String
+  fromLatitude        Float?
+  fromLongitude       Float?
+  toLatitude          Float?
+  toLongitude         Float?
+  scheduledAt         DateTime
+  loginTime           String? // "09:00"
+  reportingTime       String? // "08:30"
+  passengers          Int         @default(1)
+  vehicleType         VehicleType
+  modelYearMin        Int?
+  numberOfVehicles    Int         @default(1)
+  bookingType         BookingType @default(INSTANT)
+  platformId          String?
+  platform            Platform?   @relation(fields: [platformId], references: [id])
+  otherPlatformName   String?
+  specialInstructions String?
+  estimatedAmount     Decimal?    @db.Decimal(10, 2)
+  status              AdhocStatus @default(PENDING)
+  assignedVehicleId   String?
+  assignedVehicle     Vehicle?    @relation("AssignedVehicle", fields: [assignedVehicleId], references: [id])
+  assignedDriverId    String?
+  assignedDriver      Driver?     @relation("AssignedDriver", fields: [assignedDriverId], references: [id])
+  assignedAt          DateTime?
+  cancelReason        String?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  bookings Booking[]
+  trips    Trip[]
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  code            String        @unique // BK-20260910-001
+  date            DateTime
+  employeeName    String
+  employeeMobile  String?
+  employeeEmail   String?
+  clientId        String?
+  client          Client?       @relation(fields: [clientId], references: [id])
+  supervisorId    String?
+  supervisor      Supervisor?   @relation(fields: [supervisorId], references: [id])
+  tripType        TripType      @default(REGULAR)
+  adhocRequestId  String?
+  adhocRequest    AdhocRequest? @relation(fields: [adhocRequestId], references: [id])
+  fromLocation    String
+  toLocation      String
+  passengers      Int           @default(1)
+  vehicleType     VehicleType?
+  vehicleId       String?
+  vehicle         Vehicle?      @relation(fields: [vehicleId], references: [id])
+  driverId        String?
+  driver          Driver?       @relation(fields: [driverId], references: [id])
+  platformId      String?
+  platform        Platform?     @relation(fields: [platformId], references: [id])
+  status          BookingStatus @default(PENDING)
+  estimatedAmount Decimal?      @db.Decimal(10, 2)
+  notes           String?
+  cancelReason    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  trips Trip[]
+}
+
+model Trip {
+  id             String        @id @default(cuid())
+  code           String        @unique // GM2026091001
+  bookingId      String?
+  booking        Booking?      @relation(fields: [bookingId], references: [id])
+  adhocRequestId String?
+  adhocRequest   AdhocRequest? @relation(fields: [adhocRequestId], references: [id])
+  driverId       String
+  driver         Driver        @relation(fields: [driverId], references: [id])
+  vehicleId      String
+  vehicle        Vehicle       @relation(fields: [vehicleId], references: [id])
+  platformId     String?
+  platform       Platform?     @relation(fields: [platformId], references: [id])
+  supervisorId   String?
+  supervisor     Supervisor?   @relation(fields: [supervisorId], references: [id])
+  clientId       String?
+  client         Client?       @relation(fields: [clientId], references: [id])
+  fromLocation   String
+  toLocation     String
+  scheduledStart DateTime
+  loginTime      String?
+  reportingTime  String?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  status         TripStatus    @default(ASSIGNED)
+  amount         Decimal?      @db.Decimal(10, 2)
+  distanceKm     Float?
+  onTime         Boolean?
+  externalTripId String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  events   TripEvent[]
+  earnings Earning[]
+}
+
+model TripEvent {
+  id     String        @id @default(cuid())
+  tripId String
+  trip   Trip          @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  type   TripEventType
+  note   String?
+  at     DateTime      @default(now())
+}
+
+// ───────────────────────── Money ─────────────────────────
+model Earning {
+  id           String        @id @default(cuid())
+  driverId     String
+  driver       Driver        @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  tripId       String?
+  trip         Trip?         @relation(fields: [tripId], references: [id])
+  amount       Decimal       @db.Decimal(10, 2)
+  date         DateTime      @default(now())
+  status       EarningStatus @default(PENDING)
+  settlementId String?
+  settlement   Settlement?   @relation(fields: [settlementId], references: [id])
+  createdAt    DateTime      @default(now())
+}
+
+model Settlement {
+  id          String           @id @default(cuid())
+  code        String           @unique
+  driverId    String
+  driver      Driver           @relation(fields: [driverId], references: [id])
+  periodStart DateTime
+  periodEnd   DateTime
+  totalAmount Decimal          @db.Decimal(12, 2)
+  status      SettlementStatus @default(PENDING)
+  paidAt      DateTime?
+  reference   String?
+  createdAt   DateTime         @default(now())
+
+  earnings Earning[]
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id])
+  periodStart DateTime
+  periodEnd   DateTime
+  tripCount   Int           @default(0)
+  amount      Decimal       @db.Decimal(12, 2)
+  status      InvoiceStatus @default(DRAFT)
+  dueDate     DateTime?
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+}
+
+model Tariff {
+  id          String      @id @default(cuid())
+  vehicleType VehicleType @unique
+  baseAmount  Decimal     @db.Decimal(10, 2)
+  perKm       Decimal     @db.Decimal(10, 2)
+  perHour     Decimal?    @db.Decimal(10, 2)
+  updatedAt   DateTime    @updatedAt
+}
+
+// ───────────────────────── Messaging & audit ─────────────────────────
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType @default(SYSTEM)
+  title     String
+  body      String
+  data      Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId, read])
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation("ActorLogs", fields: [actorId], references: [id])
+  actorName  String?
+  entityType String
+  entityId   String?
+  action     String
+  details    String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}

@@ -3,23 +3,23 @@
 Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 
 ## Phase 0 — Foundation
-- [ ] T00 Repo skeleton, README, .gitignore, REQUIREMENTS.md, TASKS.md
-- [ ] T01 Backend scaffold: Express + Prisma + PostgreSQL, config, logging, error handling, docker-compose
-- [ ] T02 Prisma schema for all entities + migrations + seed data mirroring screenshots
-- [ ] T03 Auth: register (driver/supervisor), login (admin/driver/supervisor), JWT, RBAC middleware, password reset
-- [ ] T04 File upload service (GCS with local fallback), face-verification service abstraction
+- [x] T00 Repo skeleton, README, .gitignore, REQUIREMENTS.md, TASKS.md
+- [x] T01 Backend scaffold: Express + Prisma + PostgreSQL, config, logging, error handling, docker-compose
+- [x] T02 Prisma schema for all entities + migrations + seed data mirroring screenshots
+- [x] T03 Auth: register (driver/supervisor), login (admin/driver/supervisor), JWT, RBAC middleware, password reset
+- [x] T04 File upload service (GCS with local fallback), face-verification service abstraction
 
 ## Phase 1 — Backend APIs
-- [ ] T10 Supervisors API (CRUD, locations, stats, activities, reset password)
-- [ ] T11 Drivers API (CRUD, documents, vehicle link, stats, performance, status changes, blacklist)
-- [ ] T12 Vehicles API (CRUD, documents, compliance, photos, stats, bulk upload)
-- [ ] T13 Approvals API (list by type, approve/reject with remarks, stats, trends)
-- [ ] T14 Ad-hoc Requirements API (CRUD, assign vehicle/driver, costing, activity log, stats, trends)
-- [ ] T15 Bookings API (CRUD, confirm/cancel/assign, import/export CSV, stats, trends)
-- [ ] T16 Trips API (live, completed, timeline events, driver accept/decline/start/complete, earnings)
-- [ ] T17 Platforms, Clients, Locations, Settings, Admin Users APIs
-- [ ] T18 Payments & Settlement API, Reports & Analytics API, Notifications API (in-app + FCM hook)
-- [ ] T19 Dashboard aggregate API; backend test suite (supertest) green
+- [x] T10 Supervisors API (CRUD, locations, stats, activities, reset password)
+- [x] T11 Drivers API (CRUD, documents, vehicle link, stats, performance, status changes, blacklist)
+- [x] T12 Vehicles API (CRUD, documents, compliance, photos, stats, bulk upload)
+- [x] T13 Approvals API (list by type, approve/reject with remarks, stats, trends)
+- [x] T14 Ad-hoc Requirements API (CRUD, assign vehicle/driver, costing, activity log, stats, trends)
+- [x] T15 Bookings API (CRUD, confirm/cancel/assign, import/export CSV, stats, trends)
+- [x] T16 Trips API (live, completed, timeline events, driver accept/decline/start/complete, earnings)
+- [x] T17 Platforms, Clients, Locations, Settings, Admin Users APIs
+- [x] T18 Payments & Settlement API, Reports & Analytics API, Notifications API (in-app + FCM hook)
+- [x] T19 Dashboard aggregate API; backend test suite (supertest) green
 
 ## Phase 2 — Shared Flutter package
 - [ ] T20 `packages/gamya_core`: theme (colours, typography), logo widget, API client (dio), auth storage, models, common widgets (stat card, status chip, platform chip, donut/bar charts)
