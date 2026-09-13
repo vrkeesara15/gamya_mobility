@@ -29,11 +29,11 @@ Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 - [x] T31 Dashboard page
 - [x] T32 Supervisor Management page (+ detail panel, add/edit dialog)
 - [x] T33 Driver Management page (+ detail panel, add/edit dialog)
-- [ ] T34 Vehicle Management page (+ detail panel, add/edit, bulk upload)
-- [ ] T35 Pending Approvals page (+ face verification panel, approve/reject)
-- [ ] T36 Ad-hoc Requirements page (+ detail, assign, new request)
-- [ ] T37 Booking Management page (+ detail, new booking, import/export)
-- [ ] T38 Live Trips & Completed Trips pages
+- [x] T34 Vehicle Management page (+ detail panel, add/edit, bulk upload)
+- [x] T35 Pending Approvals page (+ face verification panel, approve/reject)
+- [x] T36 Ad-hoc Requirements page (+ detail, assign, new request)
+- [x] T37 Booking Management page (+ detail, new booking, import/export)
+- [x] T38 Live Trips & Completed Trips pages
 - [ ] T39 Platform Mgmt, Payments & Settlement, Reports & Analytics, Notifications, Admin Users, Settings pages
 - [ ] T3A Admin web builds (`flutter build web`) and passes `flutter analyze`
 
