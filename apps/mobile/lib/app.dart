@@ -96,10 +96,18 @@ class GamyaMobileApp extends ConsumerWidget {
   const GamyaMobileApp({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
-        title: 'Gamya Mobility', debugShowCheckedModeBanner: false, theme: GamyaTheme.light(), routerConfig: ref.watch(routerProvider),
+        title: 'Gamya Mobility', debugShowCheckedModeBanner: false, routerConfig: ref.watch(routerProvider),
+        // Web preview: instant page transitions (background tabs throttle animations).
+        theme: kIsWeb ? GamyaTheme.light().copyWith(pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: _NoTransitions(), TargetPlatform.iOS: _NoTransitions(), TargetPlatform.macOS: _NoTransitions(), TargetPlatform.windows: _NoTransitions(), TargetPlatform.linux: _NoTransitions()})) : GamyaTheme.light(),
         // On web (preview / QA builds) show the app inside a phone-sized frame.
         builder: (context, child) => kIsWeb && MediaQuery.sizeOf(context).width > 600
             ? ColoredBox(color: const Color(0xFF2A2A2A), child: Center(child: ClipRRect(borderRadius: BorderRadius.circular(28), child: SizedBox(width: 412, height: MediaQuery.sizeOf(context).height - 40, child: MediaQuery(data: MediaQuery.of(context).copyWith(size: const Size(412, 860)), child: child!)))))
             : child!,
       );
+}
+
+class _NoTransitions extends PageTransitionsBuilder {
+  const _NoTransitions();
+  @override
+  Widget buildTransitions<T>(PageRoute<T> route, BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) => child;
 }
