@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import '../../core/pick.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gamya_core/gamya_core.dart';
@@ -46,9 +47,9 @@ class _BookingsPageState extends ConsumerState<BookingsPage> {
   }
   Future<void> _export() async { try { await downloadTextFile('bookings.csv', await api.getText('/bookings/export', query: _q.filters)); if (mounted) toast(context, 'Export downloaded'); } catch (e) { if (mounted) toast(context, e.msg, error: true); } }
   Future<void> _import() async {
-    final r = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv'], withData: true);
-    if (r == null || r.files.isEmpty || r.files.first.bytes == null) return;
-    try { final res = await api.post('/bookings/import', body: {'csv': String.fromCharCodes(r.files.first.bytes!)}); final d = api.data(res); if (mounted) { toast(context, 'Imported ${d['imported']} bookings, ${d['failed']} failed'); await _load(); await _loadSide(); } } catch (e) { if (mounted) toast(context, e.msg, error: true); }
+    final files = await pickUploadFiles(type: FileType.custom, extensions: ['csv']);
+    if (files.isEmpty) return;
+    try { final res = await api.post('/bookings/import', body: {'csv': String.fromCharCodes(files.first.bytes)}); final d = api.data(res); if (mounted) { toast(context, 'Imported ${d['imported']} bookings, ${d['failed']} failed'); await _load(); await _loadSide(); } } catch (e) { if (mounted) toast(context, e.msg, error: true); }
   }
 
   @override

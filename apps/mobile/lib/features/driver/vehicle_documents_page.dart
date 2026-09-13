@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import '../../core/pick.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gamya_core/gamya_core.dart';
@@ -50,10 +51,10 @@ class _VehicleDocumentsPageState extends ConsumerState<VehicleDocumentsPage> {
   Future<void> _uploadDoc(String type) async {
     final choice = await showModalBottomSheet<String>(context: context, builder: (ctx) => SafeArea(child: Column(mainAxisSize: MainAxisSize.min, children: [ListTile(leading: const Icon(Icons.camera_alt_outlined), title: const Text('Take photo'), onTap: () => Navigator.pop(ctx, 'camera')), ListTile(leading: const Icon(Icons.photo_library_outlined), title: const Text('Choose image'), onTap: () => Navigator.pop(ctx, 'gallery')), ListTile(leading: const Icon(Icons.picture_as_pdf_outlined), title: const Text('Choose PDF / file'), onTap: () => Navigator.pop(ctx, 'file'))])));
     if (choice == null) return;
-    Uint8List? bytes; String name = '$type.jpg';
-    if (choice == 'file') { final r = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'], withData: true); if (r == null || r.files.isEmpty) return; bytes = r.files.first.bytes; name = r.files.first.name; }
+    Uint8List bytes; String name = '$type.jpg';
+    if (choice == 'file') { final files = await pickUploadFiles(type: FileType.custom, extensions: ['pdf', 'jpg', 'jpeg', 'png']); if (files.isEmpty) return; bytes = files.first.bytes; name = files.first.name; }
     else { final x = await ImagePicker().pickImage(source: choice == 'camera' ? ImageSource.camera : ImageSource.gallery, maxWidth: 1800, imageQuality: 88); if (x == null) return; bytes = await x.readAsBytes(); }
-    if (bytes == null) return;
+
     setState(() => _busy = true);
     try { final r = await api.upload('/driver/documents', files: {'file': [UploadFile(name: name, bytes: bytes)]}, fields: {'type': type}); setState(() => _docs[type] = api.data(r)); } catch (e) { if (mounted) toast(context, e.msg, error: true); }
     if (mounted) setState(() => _busy = false);

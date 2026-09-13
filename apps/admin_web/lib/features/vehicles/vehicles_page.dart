@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import '../../core/pick.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gamya_core/gamya_core.dart';
@@ -43,14 +44,14 @@ class _VehiclesPageState extends ConsumerState<VehiclesPage> {
     await _after(() => api.patch('/vehicles/${v.id}/status', body: {'status': status, if (reason != null) 'reason': reason}), 'Vehicle updated');
   }
   Future<void> _addPhotos(Vehicle v) async {
-    final r = await FilePicker.platform.pickFiles(type: FileType.image, allowMultiple: true, withData: true);
-    if (r == null || r.files.isEmpty) return;
-    await _after(() => api.upload('/vehicles/${v.id}/photos', files: {'photos': [for (final f in r.files) if (f.bytes != null) UploadFile(name: f.name, bytes: f.bytes!)]}), 'Photos uploaded');
+    final files = await pickUploadFiles(type: FileType.image, multiple: true);
+    if (files.isEmpty) return;
+    await _after(() => api.upload('/vehicles/${v.id}/photos', files: {'photos': files}), 'Photos uploaded');
   }
   Future<void> _uploadDoc(Vehicle v, String type) async {
-    final r = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'], withData: true);
-    if (r == null || r.files.isEmpty || r.files.first.bytes == null) return;
-    await _after(() => api.upload('/vehicles/${v.id}/documents', files: {'file': [UploadFile(name: r.files.first.name, bytes: r.files.first.bytes!)]}, fields: {'type': type}), 'Document uploaded');
+    final files = await pickUploadFiles(type: FileType.custom, extensions: ['jpg', 'jpeg', 'png', 'pdf']);
+    if (files.isEmpty) return;
+    await _after(() => api.upload('/vehicles/${v.id}/documents', files: {'file': files}, fields: {'type': type}), 'Document uploaded');
   }
   Future<void> _docStatus(Vehicle v, Map<String, dynamic> doc, String status) async {
     final remarks = status == 'REJECTED' ? await reasonDialog(context, title: 'Reject document', label: 'Remarks', confirmLabel: 'Reject', danger: true) : null;
@@ -58,10 +59,10 @@ class _VehiclesPageState extends ConsumerState<VehiclesPage> {
     await _after(() => api.patch('/vehicles/${v.id}/documents/${doc['id']}', body: {'status': status, if (remarks != null) 'remarks': remarks}), 'Document ${status.toLowerCase()}');
   }
   Future<void> _bulkUpload() async {
-    final r = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv'], withData: true);
-    if (r == null || r.files.isEmpty || r.files.first.bytes == null) return;
+    final files = await pickUploadFiles(type: FileType.custom, extensions: ['csv']);
+    if (files.isEmpty) return;
     try {
-      final res = await api.upload('/vehicles/bulk', files: {'file': [UploadFile(name: r.files.first.name, bytes: r.files.first.bytes!)]});
+      final res = await api.upload('/vehicles/bulk', files: {'file': files});
       final d = api.data(res);
       if (mounted) { toast(context, 'Imported ${d['imported']} vehicles, ${d['failed']} failed'); await _load(); await _loadSide(); }
     } catch (e) { if (mounted) toast(context, e.msg, error: true); }

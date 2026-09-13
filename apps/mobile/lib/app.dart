@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gamya_core/gamya_core.dart';
@@ -94,5 +95,11 @@ final routerProvider = Provider<GoRouter>((ref) {
 class GamyaMobileApp extends ConsumerWidget {
   const GamyaMobileApp({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(title: 'Gamya Mobility', debugShowCheckedModeBanner: false, theme: GamyaTheme.light(), routerConfig: ref.watch(routerProvider));
+  Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
+        title: 'Gamya Mobility', debugShowCheckedModeBanner: false, theme: GamyaTheme.light(), routerConfig: ref.watch(routerProvider),
+        // On web (preview / QA builds) show the app inside a phone-sized frame.
+        builder: (context, child) => kIsWeb && MediaQuery.sizeOf(context).width > 600
+            ? ColoredBox(color: const Color(0xFF2A2A2A), child: Center(child: ClipRRect(borderRadius: BorderRadius.circular(28), child: SizedBox(width: 412, height: MediaQuery.sizeOf(context).height - 40, child: MediaQuery(data: MediaQuery.of(context).copyWith(size: const Size(412, 860)), child: child!)))))
+            : child!,
+      );
 }

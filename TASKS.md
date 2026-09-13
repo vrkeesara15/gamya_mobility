@@ -43,9 +43,15 @@ Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 - [x] T42 Supervisor: dashboard, post requirement (3-step), summary, confirmation, tracking timeline, my bookings, history, profile, support
 - [x] T43 Driver: registration, facial identification, vehicle & documents upload (3-step), pending approval, approved
 - [x] T44 Driver: dashboard, notifications, trip details accept/decline, accepted trip, my trips, trip completed, earnings, documents, profile, help
-- [ ] T45 Mobile app passes `flutter analyze`; Android build config verified
+- [x] T45 Mobile app passes `flutter analyze`; Android build config verified
 
 ## Phase 5 — Infra & Delivery
-- [ ] T50 Backend Dockerfile, cloudbuild.yaml, Cloud Run + Cloud SQL deploy script, GCS static hosting script for admin web, env templates
-- [ ] T51 README with setup, run, test and deploy instructions; CLAUDE.md for future agents
-- [ ] T52 End-to-end smoke: seed DB, run backend, hit APIs from admin web build and mobile flows
+- [x] T50 Backend Dockerfile, cloudbuild.yaml, Cloud Run + Cloud SQL deploy script, GCS static hosting script for admin web, env templates
+- [x] T51 README with setup, run, test and deploy instructions; CLAUDE.md for future agents
+- [x] T52 End-to-end smoke: seed DB, run backend, hit APIs from admin web build and mobile flows
+
+## Phase 6 — Polish (added after first full pass)
+- [ ] T60 Android launcher icon + web favicons generated from the Gamya mark
+- [ ] T61 Visual QA of remaining admin pages (bookings, ad-hoc, trips, payments, reports, settings) in Chrome
+- [ ] T62 Visual QA of supervisor mobile flow (post requirement → summary → confirm → tracking)
+- [ ] T63 Split-per-ABI APK + app bundle build script verified
