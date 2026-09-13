@@ -25,10 +25,10 @@ Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 - [x] T20 `packages/gamya_core`: theme (colours, typography), logo widget, API client (dio), auth storage, models, common widgets (stat card, status chip, platform chip, donut/bar charts)
 
 ## Phase 3 — Admin Web (Flutter Web)
-- [ ] T30 App shell: sidebar, top bar, footer, routing (go_router), login page
-- [ ] T31 Dashboard page
-- [ ] T32 Supervisor Management page (+ detail panel, add/edit dialog)
-- [ ] T33 Driver Management page (+ detail panel, add/edit dialog)
+- [x] T30 App shell: sidebar, top bar, footer, routing (go_router), login page
+- [x] T31 Dashboard page
+- [x] T32 Supervisor Management page (+ detail panel, add/edit dialog)
+- [x] T33 Driver Management page (+ detail panel, add/edit dialog)
 - [ ] T34 Vehicle Management page (+ detail panel, add/edit, bulk upload)
 - [ ] T35 Pending Approvals page (+ face verification panel, approve/reject)
 - [ ] T36 Ad-hoc Requirements page (+ detail, assign, new request)
