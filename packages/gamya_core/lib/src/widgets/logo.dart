@@ -28,20 +28,23 @@ class _MarkPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = stroke
       ..strokeCap = StrokeCap.round;
-    // G arc: from ~ -40° sweeping counter‑clockwise to ~ 250°
+    // G arc: starts upper-right, sweeps counter-clockwise around the top/left/bottom, ends at the right
     final rect = Rect.fromCircle(center: c, radius: r);
-    canvas.drawArc(rect, -math.pi * 0.22, math.pi * 1.62, false, gold);
-    // G bar
-    final barY = c.dy + r * 0.05;
+    const start = -math.pi * 0.28;
+    const sweep = -math.pi * 1.62;
+    canvas.drawArc(rect, start, sweep, false, gold);
+    // G bar (horizontal, from the arc end inward)
+    final barY = c.dy + r * 0.08;
     canvas.drawLine(Offset(c.dx + r * 0.05, barY), Offset(c.dx + r * 1.0, barY), gold);
     // road centre dashes along the arc
     final dash = Paint()..color = const Color(0xFF1A1A1A)..style = PaintingStyle.stroke..strokeWidth = stroke * 0.16..strokeCap = StrokeCap.round;
     const segments = 9;
     for (var i = 0; i < segments; i++) {
-      final a0 = -math.pi * 0.22 + math.pi * 1.62 * (i + 0.15) / segments;
-      final a1 = -math.pi * 0.22 + math.pi * 1.62 * (i + 0.6) / segments;
+      final a0 = start + sweep * (i + 0.15) / segments;
+      final a1 = start + sweep * (i + 0.6) / segments;
       canvas.drawArc(rect, a0, a1 - a0, false, dash);
     }
+    canvas.drawLine(Offset(c.dx + r * 0.3, barY), Offset(c.dx + r * 0.95, barY), dash);
     // location pin at top-right
     final pinC = Offset(s * 0.83, s * 0.2);
     final pinR = s * 0.09;

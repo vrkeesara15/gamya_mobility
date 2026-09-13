@@ -6,9 +6,10 @@ class Fmt {
   static final _inr2 = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2);
   static final _num = NumberFormat.decimalPattern('en_IN');
 
-  static String inr(num? v, {bool decimals = false}) => v == null ? '—' : (decimals ? _inr2 : _inr).format(v);
-  static String number(num? v) => v == null ? '—' : _num.format(v);
-  static String pct(num? v) => v == null ? '—' : '${v.round()}%';
+  static num? toNum(dynamic v) => v == null ? null : v is num ? v : num.tryParse(v.toString());
+  static String inr(dynamic v, {bool decimals = false}) { final n = toNum(v); return n == null ? '—' : (decimals ? _inr2 : _inr).format(n); }
+  static String number(dynamic v) { final n = toNum(v); return n == null ? '—' : _num.format(n); }
+  static String pct(dynamic v) { final n = toNum(v); return n == null ? '—' : '${n.round()}%'; }
 
   static DateTime? parse(dynamic v) {
     if (v == null) return null;

@@ -60,7 +60,7 @@ class CardRow extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(builder: (ctx, c) {
     final fits = c.maxWidth >= minWidth * children.length + 12 * (children.length - 1);
     if (!fits) return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [for (var i = 0; i < children.length; i++) Padding(padding: EdgeInsets.only(bottom: i == children.length - 1 ? 0 : 12), child: children[i])]);
-    return IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [for (var i = 0; i < children.length; i++) ...[Expanded(flex: flex?[i] ?? 1, child: children[i]), if (i < children.length - 1) const SizedBox(width: 12)]]));
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [for (var i = 0; i < children.length; i++) ...[Expanded(flex: flex?[i] ?? 1, child: children[i]), if (i < children.length - 1) const SizedBox(width: 12)]]);
   });
 }
 

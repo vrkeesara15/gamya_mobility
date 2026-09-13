@@ -65,7 +65,7 @@ class _BookingsPageState extends ConsumerState<BookingsPage> {
         StatCard(label: 'Pending', value: Fmt.number(_stats['pending']), icon: Icons.schedule, iconColor: GamyaColors.warning, trend: '${n(_stats['pendingPct'])}%', trendColor: GamyaColors.warning, trendIcon: Icons.timelapse, onTap: () { _q.set('status', 'PENDING'); _load(); }),
         StatCard(label: 'Cancelled', value: Fmt.number(_stats['cancelled']), icon: Icons.cancel, iconColor: GamyaColors.danger, trend: '${n(_stats['cancelledPct'])}%', trendPositive: false),
         StatCard(label: 'Unique Employees', value: Fmt.number(_stats['uniqueEmployees']), icon: Icons.groups, trend: 'across all clients', trendColor: GamyaColors.success, trendIcon: Icons.arrow_upward),
-        StatCard(label: 'Est. Revenue (This Month)', value: Fmt.inr(_stats['estRevenue'] as num?), icon: Icons.currency_rupee, trend: '${n(_stats['revenueGrowthPct']) >= 0 ? '+' : ''}${n(_stats['revenueGrowthPct'])}%', trendPositive: n(_stats['revenueGrowthPct']) >= 0),
+        StatCard(label: 'Est. Revenue (This Month)', value: Fmt.inr(_stats['estRevenue']), icon: Icons.currency_rupee, trend: '${n(_stats['revenueGrowthPct']) >= 0 ? '+' : ''}${n(_stats['revenueGrowthPct'])}%', trendPositive: n(_stats['revenueGrowthPct']) >= 0),
       ]),
       const SizedBox(height: 12),
       MasterDetail(

@@ -13,7 +13,7 @@ const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(rnd() * arr.length)];
 const int = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
 const pad = (n: number, w: number) => String(n).padStart(w, '0');
 
-const AVATAR = (i: number, female = false) => `https://randomuser.me/api/portraits/${female ? 'women' : 'men'}/${(i % 90) + 1}.jpg`;
+const AVATAR = (i: number, female = false) => `https://i.pravatar.cc/300?img=${((i * 7 + (female ? 40 : 0)) % 70) + 1}`;
 const CAR = (i: number) => `https://picsum.photos/seed/gamya-car-${i}/640/400`;
 
 const CLIENTS = ['TCS', 'Accenture', 'Microsoft', 'Google', 'Amazon', 'Deloitte', 'Wipro', 'Infosys', 'Capgemini', 'Tech Mahindra', 'ABC Technologies'];
