@@ -52,6 +52,6 @@ Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 
 ## Phase 6 — Polish (added after first full pass)
 - [x] T60 Android launcher icon + web favicons generated from the Gamya mark
-- [ ] T61 Visual QA of remaining admin pages (bookings, ad-hoc, trips, payments, reports, settings) in Chrome
-- [ ] T62 Visual QA of supervisor mobile flow (post requirement → summary → confirm → tracking)
+- [x] T61 Visual QA of remaining admin pages (bookings, ad-hoc, trips, payments, reports, settings) in Chrome
+- [x] T62 Visual QA of supervisor mobile flow (post requirement → summary → confirm → tracking)
 - [x] T63 Split-per-ABI APK + app bundle build script verified

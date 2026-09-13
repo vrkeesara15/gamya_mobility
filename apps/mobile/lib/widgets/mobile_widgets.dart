@@ -33,8 +33,8 @@ class PageScaffold extends StatelessWidget {
 
 /// Dashboard header: hamburger/menu, logo, bell; then greeting row.
 class DashboardHeader extends StatelessWidget {
-  const DashboardHeader({super.key, required this.name, required this.subtitle, this.avatarUrl, this.unread = 0, this.onBell, this.onMenu, this.onAvatar, this.trailing});
-  final String name; final String subtitle; final String? avatarUrl; final int unread; final VoidCallback? onBell; final VoidCallback? onMenu; final VoidCallback? onAvatar; final Widget? trailing;
+  const DashboardHeader({super.key, required this.name, required this.subtitle, this.avatarUrl, this.avatarName, this.unread = 0, this.onBell, this.onMenu, this.onAvatar, this.trailing});
+  final String name; final String? avatarName; final String subtitle; final String? avatarUrl; final int unread; final VoidCallback? onBell; final VoidCallback? onMenu; final VoidCallback? onAvatar; final Widget? trailing;
   @override
   Widget build(BuildContext context) => Container(
     decoration: const BoxDecoration(gradient: LinearGradient(colors: [GamyaColors.black, GamyaColors.dark], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
@@ -49,7 +49,7 @@ class DashboardHeader extends StatelessWidget {
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(name, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700)), Text(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12.5))])),
         if (trailing != null) trailing!,
         const SizedBox(width: 8),
-        InkWell(onTap: onAvatar, child: GamyaAvatar(url: avatarUrl, name: name, size: 46, borderColor: GamyaColors.gold)),
+        InkWell(onTap: onAvatar, child: GamyaAvatar(url: avatarUrl, name: avatarName ?? name, size: 46, borderColor: GamyaColors.gold)),
       ])),
     ]))),
   );

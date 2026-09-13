@@ -24,7 +24,7 @@ class FilterDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(width: width, child: DropdownButtonFormField<T?>(
     key: ValueKey(value), initialValue: value, isDense: true, isExpanded: true, style: const TextStyle(fontSize: 12.5, color: GamyaColors.textPrimary), icon: const Icon(Icons.keyboard_arrow_down, size: 18, color: GamyaColors.textMuted),
     decoration: InputDecoration(contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: GamyaColors.border))),
-    hint: Text(label, style: const TextStyle(fontSize: 12.5, color: GamyaColors.textPrimary)), items: [DropdownMenuItem<T?>(value: null, child: Text(label, style: const TextStyle(fontSize: 12.5))), ...items], onChanged: onChanged,
+    hint: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12.5, color: GamyaColors.textPrimary)), items: [DropdownMenuItem<T?>(value: null, child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12.5))), ...items], onChanged: onChanged,
   ));
 }
 

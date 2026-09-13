@@ -88,8 +88,15 @@ class GamyaAdminApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
         title: 'Gamya Mobility Admin',
         debugShowCheckedModeBanner: false,
-        theme: GamyaTheme.light(),
+        theme: GamyaTheme.light().copyWith(pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: _NoTransitions(), TargetPlatform.iOS: _NoTransitions(), TargetPlatform.macOS: _NoTransitions(), TargetPlatform.windows: _NoTransitions(), TargetPlatform.linux: _NoTransitions()})),
         routerConfig: ref.watch(routerProvider),
         scrollBehavior: const MaterialScrollBehavior().copyWith(scrollbars: true),
       );
+}
+
+/// Admin pages switch instantly (no slide) – feels snappier for a desktop tool.
+class _NoTransitions extends PageTransitionsBuilder {
+  const _NoTransitions();
+  @override
+  Widget buildTransitions<T>(PageRoute<T> route, BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) => child;
 }
