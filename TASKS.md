@@ -22,7 +22,7 @@ Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 - [x] T19 Dashboard aggregate API; backend test suite (supertest) green
 
 ## Phase 2 — Shared Flutter package
-- [ ] T20 `packages/gamya_core`: theme (colours, typography), logo widget, API client (dio), auth storage, models, common widgets (stat card, status chip, platform chip, donut/bar charts)
+- [x] T20 `packages/gamya_core`: theme (colours, typography), logo widget, API client (dio), auth storage, models, common widgets (stat card, status chip, platform chip, donut/bar charts)
 
 ## Phase 3 — Admin Web (Flutter Web)
 - [ ] T30 App shell: sidebar, top bar, footer, routing (go_router), login page
