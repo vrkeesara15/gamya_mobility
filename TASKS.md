@@ -34,8 +34,8 @@ Status legend: [ ] todo · [~] in progress · [x] done (verified & committed)
 - [x] T36 Ad-hoc Requirements page (+ detail, assign, new request)
 - [x] T37 Booking Management page (+ detail, new booking, import/export)
 - [x] T38 Live Trips & Completed Trips pages
-- [ ] T39 Platform Mgmt, Payments & Settlement, Reports & Analytics, Notifications, Admin Users, Settings pages
-- [ ] T3A Admin web builds (`flutter build web`) and passes `flutter analyze`
+- [x] T39 Platform Mgmt, Payments & Settlement, Reports & Analytics, Notifications, Admin Users, Settings pages
+- [x] T3A Admin web builds (`flutter build web`) and passes `flutter analyze`
 
 ## Phase 4 — Mobile App (Flutter Android; Driver + Supervisor)
 - [ ] T40 App shell: splash, role selection, auth flow, routing, Android config (package id, icons, permissions)
